@@ -30,6 +30,13 @@
 
   </head>
 
+  @php
+    function userInitials($name) {
+      $words = explode(' ', $name);
+      return strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
+    }
+  @endphp
+
   <body>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
@@ -222,63 +229,49 @@
                   >
                 </li>
 
-                <!-- User -->
-                <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                  <a
-                    class="nav-link dropdown-toggle hide-arrow p-0"
-                    href="javascript:void(0);"
-                    data-bs-toggle="dropdown">
-                    <div class="avatar avatar-online">
-                    </div>
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <div class="d-flex">
-                          <div class="flex-shrink-0 me-3">
-                            <div class="avatar avatar-online">
-                            </div>
-                          </div>
-                          <div class="flex-grow-1">
-                            <h6 class="mb-0">John Doe</h6>
-                            <small class="text-body-secondary">Admin</small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider my-1"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <i class="icon-base bx bx-cog icon-md me-3"></i><span>Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        <span class="d-flex align-items-center align-middle">
-                          <i class="flex-shrink-0 icon-base bx bx-credit-card icon-md me-3"></i
-                          ><span class="flex-grow-1 align-middle">Billing Plan</span>
-                          <span class="flex-shrink-0 badge rounded-pill bg-danger">4</span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="dropdown-divider my-1"></div>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="javascript:void(0);">
-                        <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <!--/ User -->
+                <!-- User Menu -->
+               <li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle d-flex align-items-center p-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    @if(Auth::user()->avatar)
+      <img src="{{ Auth::user()->avatar }}" alt="Avatar" class="rounded-circle" width="40" height="40">
+    @else
+      <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center" style="width: 40px; height: 40px; font-weight: bold;">
+        {{ userInitials(Auth::user()->name) }}
+      </div>
+    @endif
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+    <li class="px-3 py-2">
+      <div class="d-flex align-items-center">
+        @if(Auth::user()->avatar)
+          <img src="{{ Auth::user()->avatar }}" alt="Avatar" class="rounded-circle me-2" width="40" height="40">
+        @else
+          <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2" style="width: 40px; height: 40px; font-weight: bold;">
+            {{ userInitials(Auth::user()->name) }}
+          </div>
+        @endif
+        <div>
+          <h6 class="mb-0">{{ Auth::user()->name }}</h6>
+          <small class="text-muted">{{ Auth::user()->role ?? 'User' }}</small>
+        </div>
+      </div>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="#"><i class="bx bx-user me-2"></i> Mi perfil</a></li>
+    <li><a class="dropdown-item" href="#"><i class="bx bx-cog me-2"></i> Configuración</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li>
+      <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="dropdown-item text-danger">
+          <i class="bx bx-power-off me-2"></i> Cerrar sesión
+        </button>
+      </form>
+    </li>
+  </ul>
+</li>
+
+                <!-- /User Menu -->
               </ul>
             </div>
           </nav>
@@ -354,6 +347,7 @@
         });
     </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   </body>
 </html>
